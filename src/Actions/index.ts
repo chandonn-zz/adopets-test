@@ -6,15 +6,18 @@ export const createUser = () => {
 	return false
 }
 
-export const login = () => {
+export const loginUser = async (name: string, password: string) => {
+	let posts = await fetch('https://jsonplaceholder.typicode.com/posts');
+	posts = await posts.json();
+
+	console.log(posts)
+}
+
+export const logoutUser = () => {
 	return false
 }
 
-export const logout = () => {
-	return false
-}
-
-export const search = () => {
+export const searchPets = () => {
 	return false
 }
 

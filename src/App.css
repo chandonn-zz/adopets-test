@@ -10,6 +10,46 @@
   max-width: 400px;
 }
 
+#bg-video {
+  right: 0;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  position: fixed;
+  overflow: hidden;
+}
+
+#home-call {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  box-shadow: inset 0px 0px 70px 20px rgba(0, 0, 0, 0.5);
+}
+
+#home-bg-image {
+  background-image: url('Resources/Images/dog-3.jpg');
+  background-size: cover;
+}
+
+#login-overlay {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  background-color: #e52e6b48;
+}
+
 .inline-elements {
   display: flex;
   flex: 1;
