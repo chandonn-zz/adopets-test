@@ -9,6 +9,7 @@ import {
 import Home from '../Home';
 import Login from '../Login';
 import SearchPage from '../SearchPage';
+import DetailsPage from '../DetailsPage';
 
 interface State {
 	user: boolean;
@@ -23,7 +24,7 @@ class MainScreen extends Component<Props, State> {
 		super(props);
 
 		this.state = {
-			user: false
+			user: true
 		}
 	}
 
@@ -42,6 +43,7 @@ class MainScreen extends Component<Props, State> {
 							<SearchPage /> : <Redirect to={{ pathname: '/login' }} />
 						}
 					</Route>
+					<Route path="/details/:id" component={DetailsPage} />
 				</Switch>
 			</Router>
 		)		
