@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 import {
+	Alert,
 	Button,
 	Form,
 	Input,
 	Icon
 } from 'antd';
 
+import { loginUser } from '../../Actions';
+
 interface State {
 	method: 'login' | 'register';
 	name: string;
 	password: string;
 	repassword: string;
+	loading: boolean;
+	error: boolean
 }
 
 interface Props {
@@ -26,73 +31,140 @@ class Login extends Component<Props, State> {
 			name: '',
 			password: '',
 			repassword: '',
+			loading: false,
+			error: false
 		}
 	}
 
+	validate() {
+		const { name, password, method, repassword } = this.state;
+		let valid = true;
+
+		if (method === 'login') {
+			valid = name !== '' && password !== '';
+
+			this.setState({
+				error: !valid
+			});
+		} else {
+			valid = name !== '' && password !== '' && repassword === password;
+
+			this.setState({
+				error: !valid
+			});
+
+		}
+
+		return valid;
+	}
+
+	async login() {
+		if (!this.validate()) {
+			return
+		}
+
+		this.setState({ loading: true });
+
+		const { name, password } = this.state;
+
+		await loginUser(name, password);
+
+		this.setState({ loading: false });
+	}
+
+	async register() {
+		if (!this.validate()) {
+			return
+		}
+
+		this.setState({ loading: true });
+
+		const { name, password, repassword } = this.state;
+
+		await loginUser(name, password);
+
+		this.setState({ loading: false });
+	}
+
 	render() {
-		const { method } = this.state;
+		const { method, loading, error } = this.state;
 
 		return (
-			<div className="container container-center">
-				{method === 'login' ?
-					(<div >
-						<h3>Login</h3>
-						<Input
-							className="add-margin-vertical"
-			            	prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-			            	placeholder="Email"
-			            	onChange={(e) => this.setState({ name: e.target.value })}
-			            />
-			            <Input
-			            	className="add-margin-vertical"
-			            	prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-			            	placeholder="Password"
-			            	type="password"
-			            	onChange={(e) => this.setState({ password: e.target.value })}
-			            />
-						<Button type="primary">Login</Button>
-						
-						<div className="separator" />
+			<div id="home-bg-image">
+				<div id="login-overlay" />
+				<div className="container container-center">
+					{method === 'login' ?
+						(<div style={{ zIndex: 10 }} >
+							<h3 style={{ color: '#fff' }}>Login</h3>
+							<Input
+								className="add-margin-vertical"
+				            	prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+				            	placeholder="Email"
+				            	onChange={(e) => this.setState({ name: e.target.value })}
+				            />
+				            <Input
+				            	className="add-margin-vertical"
+				            	prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+				            	placeholder="Password"
+				            	type="password"
+				            	onChange={(e) => this.setState({ password: e.target.value })}
+				            />
 
-						<div>
-							<span>Don't have an account?</span>
-							<Button type="link" onClick={() => this.setState({ method: 'register' })}>Register here</Button>						
-						</div>
-					</div>)
-					:
-					(<div>
-						<h3>Register</h3>
-						<Input
-							className="add-margin-vertical"
-			            	prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-			            	placeholder="Email"
-			            	onChange={(e) => this.setState({ name: e.target.value })}
-			            />
-			            <Input
-			            	className="add-margin-vertical"
-			            	prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-			            	placeholder="Password"
-			            	type="password"
-			            	onChange={(e) => this.setState({ password: e.target.value })}
-			            />
-			            <Input
-			            	className="add-margin-vertical"
-			            	prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-			            	placeholder="Repeat password"
-			            	type="password"
-			            	onChange={(e) => this.setState({ repassword: e.target.value })}
-			            />
+				            {error && method === 'login' ?
+				            	<Alert style={{ marginBottom: 10 }} type="error" message="Wrong login credentials or user not found" />
+				            : null }
 
-						<Button type="primary">Create Account</Button>
+							<Button
+								onClick={() => this.login()}
+								type="primary"
+								loading={loading && method === 'login'}
+							>Login</Button>
+							
+							<div className="separator" />
 
-						<div className="separator" />
+							<div>
+								<span style={{ color: '#fff', marginRight: 10 }}>Don't have an account?</span>
+								<Button onClick={() => this.setState({ method: 'register', error: false })}>Register here</Button>						
+							</div>
+						</div>)
+						:
+						(<div style={{ zIndex: 10 }}>
+							<h3 style={{ color: '#fff' }}>Register</h3>
+							<Input
+								className="add-margin-vertical"
+				            	prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+				            	placeholder="Email"
+				            	onChange={(e) => this.setState({ name: e.target.value })}
+				            />
+				            <Input
+				            	className="add-margin-vertical"
+				            	prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+				            	placeholder="Password"
+				            	type="password"
+				            	onChange={(e) => this.setState({ password: e.target.value })}
+				            />
+				            <Input
+				            	className="add-margin-vertical"
+				            	prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+				            	placeholder="Repeat your password"
+				            	type="password"
+				            	onChange={(e) => this.setState({ repassword: e.target.value })}
+				            />
+				            {error && method === 'register' ?
+				            	<Alert style={{ marginBottom: 10 }} type="error" message="The passwords must be the same" />
+				            : null }
 
-						<div>
-							<span>Have an account?</span>
-							<Button type="link" onClick={() => this.setState({ method: 'login' })}>Login here</Button>						
-						</div>
-					</div>)
-				}
+							<Button onClick={() => this.register()} type="primary">Create Account</Button>
+
+							<div className="separator" />
+
+							<div>
+								<span style={{ color: '#fff', marginRight: 10 }}>Have an account?</span>
+								<Button onClick={() => this.setState({ method: 'login', error: false })}>Login here</Button>						
+							</div>
+						</div>)
+					}
+				</div>
 			</div>
 		)		
 	}
