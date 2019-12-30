@@ -10,7 +10,6 @@ import { Layout, Icon } from 'antd';
 import Home from '../Home';
 import Login from '../Login';
 import SearchPage from '../SearchPage';
-import DetailsPage from '../DetailsPage';
 
 interface State {
 	user: { email: string; requestKey: string } | null;
@@ -76,11 +75,6 @@ class MainScreen extends Component<Props, State> {
 					<Route path="/search">
 						{this.state.user.requestKey !== '' ?
 							<SearchPage onAuthStateChange={this.onAuthStateChange} /> : <Redirect to={{ pathname: '/login' }} />
-						}
-					</Route>
-					<Route path="/details/:id">
-						{this.state.user.requestKey !== '' ?
-							<DetailsPage /> : <Redirect to={{ pathname: '/login' }} />
 						}
 					</Route>
 				</Switch>
