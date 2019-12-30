@@ -5,6 +5,7 @@ import {
 	Radio,
 	Pagination,
 	Row,
+	Col,
 	Button,
 	Icon,
 	Select
@@ -40,7 +41,7 @@ class SearchPage extends Component<Props, State> {
 
 		this.state = {
 			sexKey: '',
-			sizeKey: 'S',
+			sizeKey: '',
 			ageKey: '',
 			requestKey: '',
 			results: [],
@@ -136,7 +137,7 @@ class SearchPage extends Component<Props, State> {
 									pageNumber: 1,
 								}, () => this.searchPets())}
 							}
-							defaultValue="S"
+							defaultValue=""
 							buttonStyle="solid"
 							size="small"
 						>
@@ -165,19 +166,6 @@ class SearchPage extends Component<Props, State> {
 							<Radio.Button value="SENIOR">Senior</Radio.Button>
 						</Radio.Group>
 					</div>
-					<div className="add-margin-vertical">
-						<p>Sort by</p>
-						<Select
-							onChange={(value: string) => this.changeSort(value)}
-							defaultValue="name"
-							style={{ width: 140 }}
-						>
-					    	<Option value="name">Name <Icon type="arrow-up" style={{ marginLeft: 10 }} /></Option>
-					    	<Option value="-name">Name <Icon type="arrow-down" style={{ marginLeft: 10 }} /></Option>
-					    	<Option value="price">Price <Icon type="arrow-up" style={{ marginLeft: 10 }} /></Option>
-					    	<Option value="-price">Price <Icon type="arrow-down" style={{ marginLeft: 10 }} /></Option>
-					    </Select>
-					</div>
 				</Sider>
 				<Layout style={{ marginLeft: 300 }}>
 					<Header style={{ width: '100%', height: 100, background: '#ffffff', position: 'fixed', zIndex: 2, padding: 0 }}>
@@ -186,13 +174,28 @@ class SearchPage extends Component<Props, State> {
 								<span>Logout</span>
 							</Button>
 						</div>
-						<div style={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center' }}>
+						<div style={{
+							display: 'flex',
+							height: '100%',
+							alignItems: 'center'
+						}}>
 							<Search
 								placeholder="Search pets"
 								onSearch={value => this.searchPets()}
 								enterButton
 								style={{ maxWidth: '300px' }}
 							/>
+							<span style={{ marginLeft: 30, marginRight: 10 }}>Sort by</span>
+							<Select
+								onChange={(value: string) => this.changeSort(value)}
+								defaultValue="name"
+								style={{ width: 140 }}
+							>
+						    	<Option value="name">Name <Icon type="arrow-up" style={{ marginLeft: 10 }} /></Option>
+						    	<Option value="-name">Name <Icon type="arrow-down" style={{ marginLeft: 10 }} /></Option>
+						    	<Option value="price">Price <Icon type="arrow-up" style={{ marginLeft: 10 }} /></Option>
+						    	<Option value="-price">Price <Icon type="arrow-down" style={{ marginLeft: 10 }} /></Option>
+						    </Select>
 						</div>
 					</Header>
 					{loading ?

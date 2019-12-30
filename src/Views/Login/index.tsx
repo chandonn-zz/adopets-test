@@ -112,7 +112,7 @@ class Login extends Component<Props, State> {
 								loading={loading && method === 'login'}
 							>Login</Button>
 
-							<div>
+							<div className="add-margin-vertical">
 								<span style={{ color: '#fff', marginRight: 10 }}>Don't have an account?</span>
 								<Button onClick={() => this.setState({ method: 'register', error: false })}>Register here</Button>						
 							</div>
@@ -146,7 +146,7 @@ class Login extends Component<Props, State> {
 
 							<Button onClick={() => this.login()} type="primary">Create Account</Button>
 
-							<div>
+							<div className="add-margin-vertical">
 								<span style={{ color: '#fff', marginRight: 10 }}>Have an account?</span>
 								<Button onClick={() => this.setState({ method: 'login', error: false })}>Login here</Button>						
 							</div>

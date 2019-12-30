@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Modal, Button } from 'antd';
+import { Card, Modal, Button, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import { Pet } from '../Store';
 import DetailsModal from './DetailsModal';
@@ -12,6 +12,7 @@ interface Props {
 
 interface State {
 	modalVisible: boolean;
+	image: string;
 }
 
 class ListItem extends Component<Props, State> {
@@ -20,16 +21,22 @@ class ListItem extends Component<Props, State> {
 
 		this.state = {
 			modalVisible: false,
+			image: '',
 		}
 	}
 
 	transformSize(size: string) {
 		switch(size) {
+			case 'XS': return 'Extra Small';
 			case 'S': return 'Small';
 			case 'M': return 'Medium port';
 			case 'L': return 'Large';
 			case 'XL': return 'Extra large';
 		}
+	}
+
+	componentDidMount() {
+		fetch('https://source.unsplash.com/200x300/?pet').then(response => this.setState({ image: response.url }));
 	}
 
 	render() {
@@ -40,6 +47,15 @@ class ListItem extends Component<Props, State> {
 			age_key,
 			size_key,
 		} = this.props.pet;
+		const { image } = this.state;
+
+		if(image === '') {
+			return (
+				<div style={{ width: 100 }}>
+					<Icon type="loading" />
+				</div>
+			)
+		}
 
 		return (
 			<div style={{ marginRight: 10 }}>
@@ -47,7 +63,7 @@ class ListItem extends Component<Props, State> {
 					onClick={() => this.setState({ modalVisible: true })}
 					hoverable
 					style={{ width: 250 }}
-					cover={<img alt={name} src={require("../Resources/Images/dog-1.jpg")}/>}
+					cover={<img alt={name} src={image}/>}
 				>
 					<Meta title={name} description={breed_primary.name} />
 				</Card>
@@ -64,7 +80,7 @@ class ListItem extends Component<Props, State> {
 			            </Button>,
 			        ]}
 				>
-					<DetailsModal pet={this.props.pet} />
+					<DetailsModal pet={this.props.pet} image={image} />
 				</Modal>
 			</div>
 		)

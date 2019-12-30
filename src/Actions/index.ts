@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import { RequestObject } from '../Store';
 
 const API_KEY = '505763d6-4202-4b05-9efc-93b366939bcf';
 const API_BASE_URL = 'https://test.adopets.app/v1/';
@@ -22,7 +23,6 @@ export const loginUser = async (name: string, password: string) => {
 				headers: { 'Authorization': "Bearer " + token }
 			}
 		)
-		console.log(register)
 
 		// successful session registration
 		if (register.data.status === 200) {
@@ -57,7 +57,7 @@ export const getPetsFromApi = async (
 	sort: string
 ) => {
 
-	let request: any = {
+	let request: RequestObject = {
 	    "search":{
 	        "_fields":[
 	            "id",
@@ -93,7 +93,6 @@ export const getPetsFromApi = async (
 	        },
 	        "branch":{
 	            "with":{
-	                "uuid":"ef71cadf-fa9b-4c8b-a1a8-0e31e784c3ff",
 	                "_fields":[
 	                    "id",
 	                    "uuid"
