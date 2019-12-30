@@ -6,13 +6,14 @@ import {
 	Route,
 	Switch,
 } from 'react-router-dom';
+import { Layout, Icon } from 'antd';
 import Home from '../Home';
 import Login from '../Login';
 import SearchPage from '../SearchPage';
 import DetailsPage from '../DetailsPage';
 
 interface State {
-	user: boolean;
+	user: { email: string; requestKey: string } | null;
 }
 
 interface Props {
@@ -24,26 +25,64 @@ class MainScreen extends Component<Props, State> {
 		super(props);
 
 		this.state = {
-			user: true
+			user: null
 		}
+
+		this.onAuthStateChange = this.onAuthStateChange.bind(this);
 	}
 
 	componentDidMount() {
-		
+		this.onAuthStateChange();
+	}
+
+	onAuthStateChange() {
+		const email = sessionStorage.getItem('email');
+		const requestKey = sessionStorage.getItem('request_key');
+
+		if (requestKey && email) {
+			this.setState({
+				user : { email, requestKey }
+			});
+		} else {
+			this.setState({
+				user : { email: '', requestKey: '' }
+			});
+		}
 	}
 
 	render() {
+		if (!this.state.user) {
+			return (
+				<Layout>
+					<div className="container container-center" style={{ backgroundColor: '#e52e6b', minWidth: '100vw' }}>
+						<Icon type="loading" style={{ fontSize: 30, color: '#fff' }}/>
+					</div>
+				</Layout>
+			)
+		}
 		return (
 			<Router>
 				<Switch>
-					<Route exact path="/" component={Home} />
-					<Route path="/login" component={Login} />
-					<Route path="/search">
-						{this.state.user ?
-							<SearchPage /> : <Redirect to={{ pathname: '/login' }} />
+					<Route exact path="/">
+						{this.state.user.requestKey === '' ?
+							<Home /> : <Redirect to={{ pathname: '/search' }} />
 						}
 					</Route>
-					<Route path="/details/:id" component={DetailsPage} />
+					<Route path="/login">
+						{this.state.user.requestKey === '' ?
+							<Login onAuthStateChange={this.onAuthStateChange} /> : <Redirect to={{ pathname: '/search' }} />
+						}
+					</Route>
+					<Route path="/search">
+						{this.state.user.requestKey !== '' ?
+							<SearchPage onAuthStateChange={this.onAuthStateChange} /> : <Redirect to={{ pathname: '/login' }} />
+						}
+					</Route>
+					<Route path="/details/:id">
+						{this.state.user.requestKey !== '' ?
+							<DetailsPage /> : <Redirect to={{ pathname: '/login' }} />
+						}
+					</Route>
 				</Switch>
 			</Router>
 		)		
