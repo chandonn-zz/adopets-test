@@ -72,3 +72,23 @@
 .add-margin-horizontal {
   margin: 0 10px;
 }
+
+.details-image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 150px;
+  margin: 20px 0;
+}
+
+.details-image {
+  width: inherit;
+}
+
+#logout-container {
+  position: absolute;
+  right: 25%;
+}
