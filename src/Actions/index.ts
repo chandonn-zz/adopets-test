@@ -48,60 +48,104 @@ export const logoutUser = () => {
 	return true;
 }
 
-export const getPetsFromApi = (code: string, sexKey: string, sizeKey: string, ageKey: string) => {
-	console.log(code, sexKey, sizeKey, ageKey)
+export const getPetsFromApi = async (
+	request_key: string,
+	sexKey: string,
+	sizeKey: string,
+	ageKey: string,
+	pageNumber: number = 1,
+	sort: string
+) => {
 
-	return [];
+	let request: any = {
+	    "search":{
+	        "_fields":[
+	            "id",
+	            "uuid",
+	            "custom_code",
+	            "name",
+	            "specie_id",
+	            "breed_primary_id",
+	            "price",
+	            "created_date",
+	            "status_key",
+	            "branch_id",
+	            "payment_model_key",
+	            "sex_key",
+	            "size_key",
+	            "age_key"
+	        ],
+	        "specie":{
+	            "with":{
+	                "_fields":[
+	                    "id",
+	                    "name"
+	                ]
+	            }
+	        },
+	        "breed_primary":{
+	            "with":{
+	                "_fields":[
+	                    "id",
+	                    "name"
+	                ]
+	            }
+	        },
+	        "branch":{
+	            "with":{
+	                "uuid":"ef71cadf-fa9b-4c8b-a1a8-0e31e784c3ff",
+	                "_fields":[
+	                    "id",
+	                    "uuid"
+	                ]
+	            }
+	        }
+	    },
+	    "options":{
+	        "page": pageNumber,
+	        "limit":5,
+	        "sort":[]
+	    }
+	}
+
+	// adding fields to filter, if set
+	if (sexKey !== '') {
+		request["search"]["sex_key"] = sexKey;
+	}
+
+    if (sizeKey !== '') {
+    	request["search"]["size_key"] = sizeKey;
+    }
+
+    if (ageKey !== '') {
+    	request["search"]["age_key"] = ageKey;
+    }
+
+    if (sort !== '') {
+    	request["options"]["sort"] = [sort];
+    }
+
+	let response = await Axios.post(
+		`${API_BASE_URL}pet/search`,
+		request,
+		{
+			headers: { 'Authorization': 'Bearer ' + request_key }
+		}
+	);
+
+	response = response.data;
+
+	// fetch successful
+	if (response.status === 200) {
+		return {
+			pages: response.data.pages,
+			results: response.data.result,
+		}
+	} else {
+		return {
+			pages: 0,
+			results: [],
+		};
+	}
+
 }
-
-export const data = [
-	{
-		id: 0,
-		name: 'Doggy 1',
-		breed: 'Chowchow',
-		age: 8,
-		size: 'M'
-	},
-	{
-		id: 1,
-		name: 'Doggy 1',
-		breed: 'Chowchow',
-		age: 8,
-		size: 'M'
-	},
-	{
-		id: 2,
-		name: 'Doggy 2',
-		breed: 'Chowchow',
-		age: 8,
-		size: 'M'
-	},
-	{
-		id: 3,
-		name: 'Doggy 3',
-		breed: 'Chowchow',
-		age: 8,
-		size: 'M'
-	},
-	{
-		id: 4,
-		name: 'Doggy 4',
-		breed: 'Chowchow',
-		age: 8,
-		size: 'M'
-	},
-	{
-		id: 5,
-		name: 'Doggy 5',
-		breed: 'Chowchow',
-		age: 8,
-		size: 'M'
-	},
-	{
-		id: 6,
-		name: 'Doggy 6',
-		breed: 'Chowchow',
-		age: 8,
-		size: 'M'
-	},
-]
