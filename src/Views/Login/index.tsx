@@ -19,7 +19,7 @@ interface State {
 }
 
 interface Props {
-
+	onAuthStateChange: () => void;
 }
 
 class Login extends Component<Props, State> {
@@ -41,7 +41,9 @@ class Login extends Component<Props, State> {
 		let valid = true;
 
 		if (method === 'login') {
-			valid = name !== '' && password !== '';
+			const regex = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi;
+
+			valid = name !== '' && password !== '' && regex.test(name);
 
 			this.setState({
 				error: !valid
@@ -67,21 +69,11 @@ class Login extends Component<Props, State> {
 
 		const { name, password } = this.state;
 
-		await loginUser(name, password);
+		const loginSuccessful = await loginUser(name, password);
 
-		this.setState({ loading: false });
-	}
-
-	async register() {
-		if (!this.validate()) {
-			return
+		if (loginSuccessful) {
+			this.props.onAuthStateChange();
 		}
-
-		this.setState({ loading: true });
-
-		const { name, password, repassword } = this.state;
-
-		await loginUser(name, password);
 
 		this.setState({ loading: false });
 	}
@@ -119,8 +111,6 @@ class Login extends Component<Props, State> {
 								type="primary"
 								loading={loading && method === 'login'}
 							>Login</Button>
-							
-							<div className="separator" />
 
 							<div>
 								<span style={{ color: '#fff', marginRight: 10 }}>Don't have an account?</span>
@@ -154,9 +144,7 @@ class Login extends Component<Props, State> {
 				            	<Alert style={{ marginBottom: 10 }} type="error" message="The passwords must be the same" />
 				            : null }
 
-							<Button onClick={() => this.register()} type="primary">Create Account</Button>
-
-							<div className="separator" />
+							<Button onClick={() => this.login()} type="primary">Create Account</Button>
 
 							<div>
 								<span style={{ color: '#fff', marginRight: 10 }}>Have an account?</span>
